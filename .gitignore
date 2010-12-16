@@ -1,0 +1,9 @@
+*~
+*.pyc
+.DS_Store
+*.cprof
+*.profile
+*.log
+pylint*
+*.tmproj
+build
