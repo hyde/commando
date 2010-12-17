@@ -7,7 +7,7 @@ Use nose
 """
 
 from contextlib import nested
-from commando import Application, command, subcommand, param
+from commando import *
 from mock import Mock, patch
 try:
     import cStringIO as StringIO
@@ -43,7 +43,7 @@ class BasicCommandLine(Application):
         assert params.force1 == eval(params.force2)
         self._main()
 
-    def _main(): pass
+    def _main(self): pass
 
 
 @trap_exit_fail
@@ -60,8 +60,7 @@ def test_command_basic():
 
         assert _main.call_count == 2
 
-
-def test_command_version():
+def test_command_version_param():
     with patch.object(BasicCommandLine, '_main') as _main:
         c = BasicCommandLine()
         exception = False
@@ -72,6 +71,56 @@ def test_command_version():
             exception = True
         assert exception
         assert not _main.called
+
+def test_command_version():
+    class VersionCommandLine(Application):
+
+        @command(description='test', prog='Basic')
+        @param('--force', action='store_true', dest='force1')
+        @param('--force2', action='store', dest='force2')
+        @version('--version', version='%(prog)s 1.0')
+        def main(self, params):
+            assert params.force1 == eval(params.force2)
+            self._main()
+
+        def _main(self): pass
+
+    with patch.object(BasicCommandLine, '_main') as _main:
+        c = BasicCommandLine()
+        exception = False
+        try:
+            c.parse(['--version'])
+            assert False
+        except SystemExit:
+            exception = True
+        assert exception
+        assert not _main.called
+
+class SuperDecoratedCommandLine(Application):
+
+    @command(description='test', prog='Basic')
+    @true('--force', dest='force1')
+    @store('--force2', dest='force2')
+    @const('--jam', const='jam')
+    @version('--version', version='%(prog)s 1.0')
+    def main(self, params):
+        assert params.force1 == eval(params.force2)
+        self._main()
+
+    def _main(self): pass
+
+def test_command_super():
+    with patch.object(SuperDecoratedCommandLine, '_main') as _main:
+        c = SuperDecoratedCommandLine()
+        args = c.parse(['--force', '--force2', 'True'])
+        c.run(args)
+        assert _main.call_count == 1
+        assert not args.jam
+
+        args = c.parse(['--force2', 'False', '--jam'])
+        c.run(args)
+        assert _main.call_count == 2
+        assert args.jam == 'jam'
 
 class ComplexCommandLine(Application):
 

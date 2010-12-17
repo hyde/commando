@@ -7,3 +7,5 @@
 pylint*
 *.tmproj
 build
+MANIFEST
+dist
