@@ -9,3 +9,5 @@ pylint*
 build
 MANIFEST
 dist
+*egg*
+*gz

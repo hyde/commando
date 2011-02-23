@@ -1,0 +1,7 @@
+include setup.py
+include distribute_setup.py
+include commando.py
+include LICENSE
+include README.markdown
+include requirements.txt
+recursive-include tests *.py *.txt
