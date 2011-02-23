@@ -21,4 +21,5 @@ setup(
         'Topic :: Software Development',
     ],
     py_modules=['commando'],
+    install_requires = open('requirements.txt').read(),
 )
