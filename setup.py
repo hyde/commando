@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='commando',
-    version='0.1.1a',
+    version='0.1.2a',
     author='Lakshmi Vyas',
     author_email='lakshmi.vyas@gmail.com',
     url='http://github.com/lakshmivyas/commando',

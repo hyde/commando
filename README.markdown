@@ -1,6 +1,6 @@
 # commando - argparse in style
 
-Version 0.1.1a
+Version 0.1.2a
 
 A simple wrapper for `argparse` that allows commands and arguments to be defined declaratively using decorators. Note that this does not support all the features of `argparse` yet.
 
@@ -51,3 +51,8 @@ A simple wrapper for `argparse` that allows commands and arguments to be defined
             print params.sitepath
             print params.template
             print params.overwrite
+
+## Authors
+
+[Lakshmi Vyas](https://github.com/lakshmivyas)
+[Brandon Philips](https://github.com/philips)
