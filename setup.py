@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
-import commando
-from distutils.core import setup
+from distribute_setup import use_setuptools
+use_setuptools()
+from setuptools import setup, find_packages
 
 setup(
     name='commando',
-    version=commando.__version__,
+    version='0.1.1a',
     author='Lakshmi Vyas',
     author_email='lakshmi.vyas@gmail.com',
     url='http://github.com/lakshmivyas/commando',

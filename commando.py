@@ -7,7 +7,12 @@ from collections import namedtuple
 
 # pylint: disable-msg=R0903,C0103,C0301
 
-__version__ = "0.1.1a"
+try:
+    import pkg_resources
+    __version__ = pkg_resources.get_distribution('commando').version
+except Exception:
+    __version__ = 'unknown'
+
 __all__ = ['command',
            'subcommand',
            'param',
