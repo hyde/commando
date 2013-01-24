@@ -7,7 +7,7 @@ setup(
     description='A declarative interface to argparse with additional utilities',
     long_description='Adds decorators that allow subcommands to be defined as simple functions',
 
-    version='0.2a',
+    version='0.2.1a',
 
     author='Lakshmi Vyas',
     author_email='lakshmi.vyas@gmail.com',

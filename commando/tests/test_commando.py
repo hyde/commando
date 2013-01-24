@@ -178,3 +178,42 @@ def test_command_subcommands():
         c.run(args)
         assert not _main.called
         assert _sub.call_count == 1
+
+
+class EmptyCommandLine(Application):
+
+    @command(description='test', prog='Empty')
+    def main(self, params):
+        assert params == []
+        self._main()
+
+    @subcommand('sub', description='test sub')
+    def sub(self, params):
+        assert params
+        assert len(params.__dict__) == 1
+        self._sub()
+
+    def _main():
+        pass
+
+    def _sub():
+        pass
+
+
+@trap_exit_pass
+def test_empty_main_command():
+    with nested(patch.object(EmptyCommandLine, '_main'),
+                patch.object(EmptyCommandLine, '_sub')) as (_main, _sub):
+        e = EmptyCommandLine(raise_exceptions=True)
+        args = e.parse(None)
+        e.run(args)
+        assert _main.call_count == 1
+
+
+def test_empty_sub_command():
+    with nested(patch.object(EmptyCommandLine, '_main'),
+                patch.object(EmptyCommandLine, '_sub')) as (_main, _sub):
+        e = EmptyCommandLine(raise_exceptions=True)
+        e.run(e.parse(['sub']))
+        assert not _main.called
+        assert _sub.call_count == 1
