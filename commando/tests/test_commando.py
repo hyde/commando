@@ -8,11 +8,16 @@ Use nose
 
 from contextlib import nested
 from commando import *
-from mock import Mock, patch
+from mock import patch
+
+
 try:
-    import cStringIO as StringIO
+    import cStringIO
+    StringIO = cStringIO
 except ImportError:
-    import StringIO
+    import StringIO as xStringIO
+    StringIO = xStringIO
+
 
 def trap_exit_fail(f):
     def test_wrapper(*args):
@@ -22,6 +27,7 @@ def trap_exit_fail(f):
             assert False
     test_wrapper.__name__ = f.__name__
     return test_wrapper
+
 
 def trap_exit_pass(f):
     def test_wrapper(*args):
@@ -33,6 +39,7 @@ def trap_exit_pass(f):
     test_wrapper.__name__ = f.__name__
     return test_wrapper
 
+
 class BasicCommandLine(Application):
 
     @command(description='test', prog='Basic')
@@ -43,7 +50,8 @@ class BasicCommandLine(Application):
         assert params.force1 == eval(params.force2)
         self._main()
 
-    def _main(self): pass
+    def _main(self):
+        pass
 
 
 @trap_exit_fail
@@ -60,6 +68,7 @@ def test_command_basic():
 
         assert _main.call_count == 2
 
+
 def test_command_version_param():
     with patch.object(BasicCommandLine, '_main') as _main:
         c = BasicCommandLine()
@@ -72,6 +81,7 @@ def test_command_version_param():
         assert exception
         assert not _main.called
 
+
 def test_command_version():
     class VersionCommandLine(Application):
 
@@ -83,7 +93,8 @@ def test_command_version():
             assert params.force1 == eval(params.force2)
             self._main()
 
-        def _main(self): pass
+        def _main(self):
+            pass
 
     with patch.object(BasicCommandLine, '_main') as _main:
         c = BasicCommandLine()
@@ -96,6 +107,7 @@ def test_command_version():
         assert exception
         assert not _main.called
 
+
 class SuperDecoratedCommandLine(Application):
 
     @command(description='test', prog='Basic')
@@ -107,7 +119,9 @@ class SuperDecoratedCommandLine(Application):
         assert params.force1 == eval(params.force2)
         self._main()
 
-    def _main(self): pass
+    def _main(self):
+        pass
+
 
 def test_command_super():
     with patch.object(SuperDecoratedCommandLine, '_main') as _main:
@@ -122,25 +136,29 @@ def test_command_super():
         assert _main.call_count == 2
         assert args.jam == 'jam'
 
+
 class ComplexCommandLine(Application):
 
-       @command(description='test', prog='Complex')
-       @param('--force', action='store_true', dest='force1')
-       @param('--force2', action='store', dest='force2')
-       @param('--version', action='version', version='%(prog)s 1.0')
-       def main(self, params):
-           assert params.force1 == eval(params.force2)
-           self._main()
+    @command(description='test', prog='Complex')
+    @param('--force', action='store_true', dest='force1')
+    @param('--force2', action='store', dest='force2')
+    @param('--version', action='version', version='%(prog)s 1.0')
+    def main(self, params):
+        assert params.force1 == eval(params.force2)
+        self._main()
 
-       @subcommand('sub', description='test')
-       @param('--launch', action='store_true', dest='launch1')
-       @param('--launch2', action='store', dest='launch2')
-       def sub(self, params):
-           assert params.launch1 == eval(params.launch2)
-           self._sub()
+    @subcommand('sub', description='test')
+    @param('--launch', action='store_true', dest='launch1')
+    @param('--launch2', action='store', dest='launch2')
+    def sub(self, params):
+        assert params.launch1 == eval(params.launch2)
+        self._sub()
 
-       def _main(): pass
-       def _sub(): pass
+    def _main():
+        pass
+
+    def _sub():
+        pass
 
 
 @trap_exit_pass
@@ -149,6 +167,7 @@ def test_command_subcommands_usage():
                 patch.object(ComplexCommandLine, '_sub')) as (_main, _sub):
         c = ComplexCommandLine()
         c.parse(['--usage'])
+
 
 @trap_exit_fail
 def test_command_subcommands():

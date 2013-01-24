@@ -4,6 +4,9 @@ Declarative interface for argparse
 """
 from argparse import ArgumentParser
 from collections import namedtuple
+from commando.util import getLoggerWithConsoleHandler
+
+import logging
 
 # pylint: disable-msg=R0903,C0103,C0301
 
@@ -13,17 +16,20 @@ try:
 except Exception:
     __version__ = 'unknown'
 
-__all__ = ['command',
-           'subcommand',
-           'param',
-           'version',
-           'store',
-           'true',
-           'false',
-           'append',
-           'const',
-           'append_const',
-           'Application']
+__all__ = [
+    '__version__',
+    'command',
+    'subcommand',
+    'param',
+    'version',
+    'store',
+    'true',
+    'false',
+    'append',
+    'const',
+    'append_const',
+    'Application'
+]
 
 
 class Commando(type):
@@ -191,7 +197,7 @@ class Application(object):
 
     def __init__(self, raise_exceptions=False, logger=None):
         self.raise_exceptions = raise_exceptions
-        self.logger = logger
+        self.logger = logger or getLoggerWithConsoleHandler()
 
     def parse(self, argv):
         """
@@ -204,6 +210,9 @@ class Application(object):
         Runs the main command or sub command based on user input
         """
 
+        if getattr(args, 'verbose', False):
+            self.logger.setLevel(logging.DEBUG)
+
         if not args:
             import sys
             args = self.parse(sys.argv[1:])
@@ -213,7 +222,7 @@ class Application(object):
             else:
                 self.__main__(args)  # pylint: disable-msg=E1101
         except Exception, e:
-            if self.raise_exceptions or not (self.logger or self.__parser__):
+            if self.raise_exceptions:
                 raise
             elif self.__parser__:
                 self.__parser__.error(e.message)

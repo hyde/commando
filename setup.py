@@ -4,13 +4,23 @@ from setuptools import setup
 
 setup(
     name='commando',
-    version='0.1.3a',
+    description='A declarative interface to argparse with additional utilities',
+    long_description='Adds decorators that allow subcommands to be defined as simple functions',
+
+    version='0.2a',
+
     author='Lakshmi Vyas',
     author_email='lakshmi.vyas@gmail.com',
     url='http://github.com/lakshmivyas/commando',
-    description='A declarative interface for argparse',
-    long_description='Adds decorators that allow subcommands to be defined as simple functions',
+
+    packages=['commando'],
+    requires=['python (>= 2.7)'],
+    provides=['commando'],
+    test_requires=['nose', 'mock'],
+
     license='MIT',
+
+    keywords=('argparse commandline utility'),
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Console',
@@ -21,6 +31,6 @@ setup(
         'Topic :: Software Development :: User Interfaces',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
-    py_modules=['commando'],
-    install_requires=open('requirements.txt').read(),
+
+    test_suite='nose.collector',
 )

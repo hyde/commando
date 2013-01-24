@@ -1,0 +1,1 @@
+from commando.application import *
