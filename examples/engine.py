@@ -3,8 +3,7 @@
 """
 Implements the engine entry point commands
 """
-import sys
-from commando import *
+from commando import Application, command, store, subcommand, true, version
 
 
 class Engine(Application):

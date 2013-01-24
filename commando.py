@@ -25,6 +25,7 @@ __all__ = ['command',
            'append_const',
            'Application']
 
+
 class Commando(type):
     """
     Meta class that enables declarative command definitions
@@ -75,7 +76,7 @@ class metarator(object):
     """
 
     def __init__(self, *args, **kwargs):
-        self.values = values._make((args, kwargs)) #pylint: disable-msg=W0212
+        self.values = values._make((args, kwargs))  # pylint: disable-msg=W0212
 
     def metarate(self, func, name='values'):
         """
@@ -125,6 +126,7 @@ class version(param):
     def __init__(self, *args, **kwargs):
         super(version, self).__init__(*args, action='version', **kwargs)
 
+
 class store(param):
     """
     Use this decorator for adding the simple params that store data.
@@ -132,6 +134,7 @@ class store(param):
 
     def __init__(self, *args, **kwargs):
         super(store, self).__init__(*args, action='store', **kwargs)
+
 
 class true(param):
     """
@@ -141,6 +144,7 @@ class true(param):
     def __init__(self, *args, **kwargs):
         super(true, self).__init__(*args, action='store_true', **kwargs)
 
+
 class false(param):
     """
     Use this decorator as a substitute for 'store_false' action.
@@ -148,6 +152,7 @@ class false(param):
 
     def __init__(self, *args, **kwargs):
         super(false, self).__init__(*args, action='store_false', **kwargs)
+
 
 class const(param):
     """
@@ -157,6 +162,7 @@ class const(param):
     def __init__(self, *args, **kwargs):
         super(const, self).__init__(*args, action='store_const', **kwargs)
 
+
 class append(param):
     """
     Use this decorator as a substitute for 'append' action.
@@ -165,13 +171,17 @@ class append(param):
     def __init__(self, *args, **kwargs):
         super(append, self).__init__(*args, action='append', **kwargs)
 
+
 class append_const(param):
     """
     Use this decorator as a substitute for 'append_const' action.
     """
 
     def __init__(self, *args, **kwargs):
-        super(append_const, self).__init__(*args, action='append_const', **kwargs)
+        super(append_const, self).__init__(*args,
+                                                action='append_const',
+                                                **kwargs)
+
 
 class Application(object):
     """
@@ -179,11 +189,15 @@ class Application(object):
     """
     __metaclass__ = Commando
 
+    def __init__(self, raise_exceptions=False, logger=None):
+        self.raise_exceptions = raise_exceptions
+        self.logger = logger
+
     def parse(self, argv):
         """
         Simple method that delegates to the ArgumentParser
         """
-        return self.__parser__.parse_args(argv) #pylint: disable-msg=E1101
+        return self.__parser__.parse_args(argv)  # pylint: disable-msg=E1101
 
     def run(self, args=None):
         """
@@ -193,8 +207,16 @@ class Application(object):
         if not args:
             import sys
             args = self.parse(sys.argv[1:])
-
-        if hasattr(args, 'run'):
-            args.run(self, args)
-        else:
-            self.__main__(args)  #pylint: disable-msg=E1101
+        try:
+            if hasattr(args, 'run'):
+                args.run(self, args)
+            else:
+                self.__main__(args)  # pylint: disable-msg=E1101
+        except Exception, e:
+            if self.raise_exceptions or not (self.logger or self.__parser__):
+                raise
+            elif self.__parser__:
+                self.__parser__.error(e.message)
+            else:
+                self.logger.error(e.message)
+                return -1
