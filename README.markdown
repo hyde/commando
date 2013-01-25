@@ -59,5 +59,7 @@ line applications.
 
 ## Authors
 
-[Lakshmi Vyas](https://github.com/lakshmivyas)
-[Brandon Philips](https://github.com/philips)
+*   [Lakshmi Vyas](https://github.com/lakshmivyas)
+*   [Brandon Philips](https://github.com/philips)
+*   [Ben West](https://github.com/bewest)
+*   [Julien Danjou](https://github.com/jd)

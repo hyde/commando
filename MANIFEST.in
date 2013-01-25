@@ -1,7 +1,7 @@
+exclude *.pyc .DS_Store .gitignore .noseids MANIFEST.in
 include setup.py
 include distribute_setup.py
-include commando.py
+recursive-include commando *.py
+recursive-include commando/tests *.py *.txt
 include LICENSE
 include README.markdown
-include requirements.txt
-recursive-include tests *.py *.txt
