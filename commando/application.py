@@ -41,35 +41,62 @@ class Commando(type):
         instance = super(Commando, mcs).__new__(mcs, name, bases, attrs)
         subcommands = []
         main_command = None
-        for name, member in attrs.iteritems():
+        main_parser = None
+
+        # Collect commands based on decorators
+        for member in attrs.itervalues():
             if hasattr(member, "command"):
                 main_command = member
             elif hasattr(member, "subcommand"):
                 subcommands.append(member)
-        main_parser = None
 
-        def add_arguments(parser, params):
-            """
-            Adds parameters to the parser
-            """
+        def add_arguments(func):
+            params = getattr(func, 'params', [])
             for parameter in params:
-                parser.add_argument(*parameter.args, **parameter.kwargs)
+                func.parser.add_argument(*parameter.args, **parameter.kwargs)
+
+        def add_subparser(func):
+            if getattr(func, 'parser', None):
+                # Already initialized
+                return
+            if not func.parent:
+                # Sub of main
+                func.parent = main_command
+            else:
+                # Sub of something else
+                if not getattr(func.parent, 'parser', None):
+                    # Parser doesn't exist for the parent.
+                    add_subparser(func.parent)
+                if not getattr(func.parent, 'subparsers', None):
+                    # Subparser collection doesn't exist for the parent.
+                    func.parent.subparsers = func.parent.parser.add_subparsers()
+
+            func.parser = func.parent.subparsers.add_parser(
+                                                    *func.subcommand.args,
+                                                    **func.subcommand.kwargs)
+            add_arguments(func)
 
         if main_command:
             main_parser = ArgumentParser(*main_command.command.args,
                                         **main_command.command.kwargs)
-            add_arguments(main_parser, getattr(main_command, 'params', []))
-            subparsers = None
-            if len(subcommands):
-                subparsers = main_parser.add_subparsers()
-                for sub in subcommands:
-                    parser = subparsers.add_parser(*sub.subcommand.args,
-                                                  **sub.subcommand.kwargs)
-                    parser.set_defaults(run=sub)
-                    add_arguments(parser, getattr(sub, 'params', []))
 
-        instance.__parser__ = main_parser
+            main_command.parser = main_parser
+            add_arguments(main_command)
+
+            if len(subcommands):
+                main_command.subparsers = main_parser.add_subparsers()
+                for sub in subcommands:
+                    add_subparser(sub)
+
+        for sub in subcommands:
+            # Map the functions to the subparser actions
+            if not getattr(sub, 'subparsers', None):
+                # Only if there are no subcommands
+                sub.parser.set_defaults(run=sub)
+
         instance.__main__ = main_command
+        instance.__parser__ = main_parser
+
         return instance
 
 values = namedtuple('__meta_values', 'args, kwargs')
@@ -109,7 +136,16 @@ class subcommand(metarator):
     Used to decorate the subcommands
     """
 
+    def __init__(self, *args, **kwargs):
+        self.parent = kwargs.get('parent')
+        try:
+            del kwargs['parent']
+        except KeyError:
+            pass
+        super(subcommand, self).__init__(*args, **kwargs)
+
     def __call__(self, func):
+        func.parent = self.parent
         return self.metarate(func, name='subcommand')
 
 

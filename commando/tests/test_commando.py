@@ -24,6 +24,8 @@ def trap_exit_fail(f):
         try:
             f(*args)
         except SystemExit:
+            import traceback
+            print traceback.format_exc()
             assert False
     test_wrapper.__name__ = f.__name__
     return test_wrapper
@@ -207,6 +209,7 @@ def test_empty_main_command():
         e = EmptyCommandLine(raise_exceptions=True)
         args = e.parse(None)
         e.run(args)
+        assert not _sub.called
         assert _main.call_count == 1
 
 
@@ -217,3 +220,81 @@ def test_empty_sub_command():
         e.run(e.parse(['sub']))
         assert not _main.called
         assert _sub.call_count == 1
+
+
+class NestedCommandLine(Application):
+
+    @command(description='test', prog='Nested')
+    @param('--force', action='store_true', dest='force1')
+    @param('--force2', action='store', dest='force2')
+    @param('--version', action='version', version='%(prog)s 1.0')
+    def main(self, params):
+        assert params.force1 == eval(params.force2)
+        self._main()
+
+    @subcommand('sub', description='sub')
+    @param('--launch', action='store_true', dest='launch1')
+    @param('--launch2', action='store', dest='launch2')
+    def sub(self, params):
+        assert params.launch1 == eval(params.launch2)
+        self._sub()
+
+    @subcommand('foobar', description="foo bar!")
+    def foobar(self, params):
+        assert False
+
+    @subcommand('bla', parent=foobar)
+    @param('--launch2', action='store_true', dest='launch2')
+    def foobar_bla(self, params):
+        assert params.launch2
+        self._foobar_bla()
+
+    @subcommand('blip', parent=foobar)
+    def foobar_blip(self, params):
+        assert False
+
+    @subcommand('blop', parent=foobar_blip)
+    def foobar_blip_blop(self, params):
+        self._foobar_blip_blop()
+
+    def _main():
+        pass
+
+    def _sub():
+        pass
+
+    def _foobar_bla():
+        pass
+
+    def _foobar_blip_blop():
+        pass
+
+
+@trap_exit_fail
+def test_nested_command_subcommands():
+    with nested(patch.object(NestedCommandLine, '_main'),
+                patch.object(NestedCommandLine, '_sub'),
+                patch.object(NestedCommandLine, '_foobar_bla'),
+                patch.object(NestedCommandLine, '_foobar_blip_blop')) \
+                as (_main, _sub, _foobar_bla, _foobar_blip_blop):
+
+        c = NestedCommandLine(raise_exceptions=True)
+
+        args = c.parse(['sub', '--launch', '--launch2', 'True'])
+        c.run(args)
+        assert not _main.called
+        assert _sub.call_count == 1
+
+        args = c.parse(['foobar', 'bla', '--launch2'])
+        c.run(args)
+
+        assert not _main.called
+        assert _sub.call_count == 1
+        assert _foobar_bla.call_count == 1
+
+        args = c.parse(['foobar', 'blip', 'blop'])
+        c.run(args)
+        assert not _main.called
+        assert _sub.call_count == 1
+        assert _foobar_bla.call_count == 1
+        assert _foobar_blip_blop.call_count == 1
