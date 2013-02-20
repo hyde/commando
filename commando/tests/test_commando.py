@@ -55,7 +55,6 @@ class BasicCommandLine(Application):
     def _main(self):
         pass
 
-
 @trap_exit_fail
 def test_command_basic():
 
@@ -84,6 +83,28 @@ def test_command_version_param():
         assert not _main.called
 
 
+def test_positional_params():
+    class PositionalCommandLine(Application):
+
+        @command(description='test', prog='Basic')
+        @param('force1', action='store')
+        @param('force3', action='store')
+        @param('force2', action='store')
+        def main(self, params):
+            self._main(params)
+
+        def _main(self, params):
+            assert params.force1 == '1'
+            assert params.force3 == '2'
+            assert params.force2 == '3'
+
+
+
+    p = PositionalCommandLine()
+    args = p.parse(['1', '2', '3'])
+    p.run(args)
+
+
 def test_command_version():
     class VersionCommandLine(Application):
 
@@ -98,8 +119,8 @@ def test_command_version():
         def _main(self):
             pass
 
-    with patch.object(BasicCommandLine, '_main') as _main:
-        c = BasicCommandLine()
+    with patch.object(VersionCommandLine, '_main') as _main:
+        c = VersionCommandLine()
         exception = False
         try:
             c.parse(['--version'])

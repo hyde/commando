@@ -24,7 +24,12 @@ Authors
 
     -   Support for nested subcommands. (Pull #7)
 
+*   `fruch`_
+
+        Use the parameters in the same order as provided. (Pulls #8)
+
 .. _Lakshmi Vyas: https://github.com/lakshmivyas
 .. _Brandon Philips: https://github.com/philips
 .. _Ben West: https://github.com/bewest
 .. _Julien Danjou: https://github.com/jd
+.. _fruch:  https://github.com/fruch

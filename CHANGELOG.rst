@@ -1,3 +1,10 @@
+Version 0.3.1a
+--------------
+
+Thanks to `fruch_ :
+
+- Preserve the order of parameters in declaration.
+
 Version 0.3a
 --------------
 
@@ -51,3 +58,4 @@ Version 0.1a
 .. _Brandon Philips: https://github.com/philips
 .. _Ben West: https://github.com/bewest
 .. _Julien Danjou: https://github.com/jd
+.. _fruch:  https://github.com/fruch
