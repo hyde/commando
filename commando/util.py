@@ -7,6 +7,49 @@ import sys
 from logging import NullHandler
 from subprocess import check_call, check_output, Popen
 
+class CommandoLoaderException(Exception): pass
+
+def load_python_object(name):
+    """
+    Loads a python module from string
+    """
+    logger = getLoggerWithNullHandler('commando.load_python_object')
+    (module_name, _, object_name) = name.rpartition(".")
+    if module_name == '':
+        (module_name, object_name) = (object_name, module_name)
+    try:
+        logger.debug('Loading module [%s]' % module_name)
+        module = __import__(module_name)
+    except ImportError:
+        raise CommandoLoaderException(
+                "Module [%s] cannot be loaded." % module_name)
+
+    if object_name == '':
+        return module
+
+    try:
+        module = sys.modules[module_name]
+    except KeyError:
+        raise CommandoLoaderException(
+                "Error occured when loading module [%s]" % module_name)
+
+    try:
+        logger.debug('Getting object [%s] from module [%s]' %
+                    (object_name, module_name))
+        return getattr(module, object_name)
+    except AttributeError:
+        raise CommandoLoaderException(
+                "Cannot load object [%s]. "
+                "Module [%s] does not contain object [%s]. "
+                "Please fix the configuration or "
+                "ensure that the module is installed properly" %
+                    (
+                        name,
+                        module_name,
+                        object_name
+                    )
+        )
+
 
 class ShellCommand(object):
     """
@@ -120,3 +163,13 @@ class ColorFormatter(logging.Formatter):
         return message + RESET_SEQ
 
 logging.ColorFormatter = ColorFormatter
+
+
+__all__ = [
+            'CommandoLoaderException',
+            'load_python_object',
+            'ShellCommand',
+            'ColorFormatter',
+            'getLoggerWithNullHandler',
+            'getLoggerWithConsoleHandler'
+        ]

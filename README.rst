@@ -2,13 +2,13 @@
 commando - argparse in style
 ============================
 
-**Version 0.3.1a**
+**Version 0.3.2a**
 
 A simple wrapper for ``argparse`` that allows commands and arguments
 to be defined declaratively using decorators. Note that this does
 not support all the features of ``argparse`` yet.
 
-Commando also bundles a few utilities that are useful when building 
+Commando also bundles a few utilities that are useful when building
 command line applications.
 
 Example

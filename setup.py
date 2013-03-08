@@ -13,7 +13,7 @@ setup(
     description='A declarative interface to argparse with additional utilities',
     long_description=long_description,
 
-    version='0.3.1a',
+    version='0.3.2a',
 
     author='Lakshmi Vyas',
     author_email='lakshmi.vyas@gmail.com',
@@ -22,7 +22,7 @@ setup(
     packages=['commando'],
     requires=['python (>= 2.7)'],
     provides=['commando'],
-    test_requires=['nose', 'mock'],
+    test_requires=['nose', 'mock', 'fswrap', 'markdown', 'yaml'],
 
     license='MIT',
 

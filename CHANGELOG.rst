@@ -1,3 +1,8 @@
+Version 0.3.2a
+--------------
+
+- Add `load_python_object` to load a python object using a qualified name.
+
 Version 0.3.1a
 --------------
 
@@ -10,7 +15,7 @@ Version 0.3a
 
 Thanks to `Julien Danjou`_ :
 
--   Add support for nested sub commands. 
+-   Add support for nested sub commands.
     {0e26a6fe2571accb78d26318ab1b8dc65636d2b0}. (Pull #7)
 
 Version 0.2.1a
