@@ -1,1 +1,1 @@
-from commando.application import *
+from .application import *

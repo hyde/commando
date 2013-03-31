@@ -9,8 +9,6 @@ from commando.util import CommandoLoaderException, load_python_object
 from nose.tools import raises
 import os
 
-from fswrap import File
-
 
 def test_can_load_locals():
 
@@ -30,6 +28,7 @@ def test_can_load_from_python_path():
 
     assert "<h3>h3</h3>" == markdown("### h3")
 
+
 def test_can_load_module_without_dot():
 
     yaml = load_python_object('yaml')
@@ -42,10 +41,12 @@ def test_can_load_module_without_dot():
     assert abc['d'] == 'efg'
     assert abc['l'] == 'mno'
 
+
 @raises(CommandoLoaderException)
 def test_exception_raised_for_invalid_module():
     load_python_object("junk.junk.junk")
     assert False
+
 
 @raises(CommandoLoaderException)
 def test_exception_raised_for_invalid_object():

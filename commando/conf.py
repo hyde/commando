@@ -2,11 +2,12 @@ from collections import defaultdict
 
 seqs = (tuple, list, set, frozenset)
 
+
 class ConfigDict(defaultdict):
     def __init__(self, initial=None):
         super(ConfigDict, self).__init__(ConfigDict)
         initial = initial or {}
-        for key, value in initial.iteritems():
+        for key, value in initial.items():
             self.__setitem__(key, value)
 
     def __setitem__(self, key, value):
@@ -28,7 +29,7 @@ class ConfigDict(defaultdict):
 
     def patch(self, overrides):
         overrides = overrides or {}
-        for key, value in overrides.iteritems():
+        for key, value in overrides.items():
             current = self.get(key)
             if isinstance(value, dict) and isinstance(current, dict):
                 current.patch(value)
@@ -62,18 +63,19 @@ class AutoPropDescriptor(object):
 class AutoPropMetaClass(type):
 
     def __new__(mcs, cname, cbases, cattrs):
-        autoprops = {name: member
-                        for name, member in cattrs.iteritems()
-                        if getattr(member, 'autoprop', False)}
-        for name, member in autoprops.iteritems():
+        autoprops = {
+            name: member
+            for name, member in cattrs.items()
+            if getattr(member, 'autoprop', False)
+        }
+        for name, member in autoprops.items():
             cattrs[name] = AutoPropDescriptor(member)
         return super(AutoPropMetaClass, mcs).__new__(
-                mcs, cname, cbases, cattrs)
+            mcs, cname, cbases, cattrs
+        )
 
 
-class AutoProp(object):
-
-    __metaclass__ = AutoPropMetaClass
+class AutoProp(object, metaclass=AutoPropMetaClass):
 
     @staticmethod
     def default(f):

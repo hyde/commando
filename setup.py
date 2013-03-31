@@ -13,15 +13,18 @@ setup(
     description='A declarative interface to argparse with additional utilities',
     long_description=long_description,
 
-    version='0.3.2a',
+    version='0.4',
 
     author='Lakshmi Vyas',
     author_email='lakshmi.vyas@gmail.com',
     url='http://github.com/lakshmivyas/commando',
 
     packages=['commando'],
-    requires=['python (>= 2.7)'],
+    requires=['python (>= 3.3)'],
     provides=['commando'],
+    dependency_links=[
+        "https://github.com/lakshmivyas/fswrap/archive/refactor/python3.zip#egg=fswrap"
+      ],
     test_requires=['nose', 'mock', 'fswrap', 'markdown', 'yaml'],
 
     license='MIT',

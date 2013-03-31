@@ -6,7 +6,6 @@ Use nose
 `$ nosetests test_commando.py -d -v`
 """
 
-from contextlib import nested
 from commando import *
 from mock import patch
 
@@ -15,7 +14,7 @@ try:
     import cStringIO
     StringIO = cStringIO
 except ImportError:
-    import StringIO as xStringIO
+    import io as xStringIO
     StringIO = xStringIO
 
 
@@ -25,7 +24,7 @@ def trap_exit_fail(f):
             f(*args)
         except SystemExit:
             import traceback
-            print traceback.format_exc()
+            print(traceback.format_exc())
             assert False
     test_wrapper.__name__ = f.__name__
     return test_wrapper
@@ -34,7 +33,7 @@ def trap_exit_fail(f):
 def trap_exit_pass(f):
     def test_wrapper(*args):
         try:
-            print f.__name__
+            print(f.__name__)
             f(*args)
         except SystemExit:
             pass
@@ -54,6 +53,7 @@ class BasicCommandLine(Application):
 
     def _main(self):
         pass
+
 
 @trap_exit_fail
 def test_command_basic():
@@ -97,8 +97,6 @@ def test_positional_params():
             assert params.force1 == '1'
             assert params.force3 == '2'
             assert params.force2 == '3'
-
-
 
     p = PositionalCommandLine()
     args = p.parse(['1', '2', '3'])
@@ -186,16 +184,16 @@ class ComplexCommandLine(Application):
 
 @trap_exit_pass
 def test_command_subcommands_usage():
-    with nested(patch.object(ComplexCommandLine, '_main'),
-                patch.object(ComplexCommandLine, '_sub')) as (_main, _sub):
+    with patch.object(ComplexCommandLine, '_main'), \
+            patch.object(ComplexCommandLine, '_sub'):
         c = ComplexCommandLine()
         c.parse(['--usage'])
 
 
 @trap_exit_fail
 def test_command_subcommands():
-    with nested(patch.object(ComplexCommandLine, '_main'),
-                patch.object(ComplexCommandLine, '_sub')) as (_main, _sub):
+    with patch.object(ComplexCommandLine, '_main') as _main, \
+            patch.object(ComplexCommandLine, '_sub') as _sub:
         c = ComplexCommandLine()
         args = c.parse(['sub', '--launch', '--launch2', 'True'])
         c.run(args)
@@ -225,8 +223,8 @@ class EmptyCommandLine(Application):
 
 @trap_exit_pass
 def test_empty_main_command():
-    with nested(patch.object(EmptyCommandLine, '_main'),
-                patch.object(EmptyCommandLine, '_sub')) as (_main, _sub):
+    with patch.object(EmptyCommandLine, '_main') as _main, \
+            patch.object(EmptyCommandLine, '_sub') as _sub:
         e = EmptyCommandLine(raise_exceptions=True)
         args = e.parse(None)
         e.run(args)
@@ -235,8 +233,8 @@ def test_empty_main_command():
 
 
 def test_empty_sub_command():
-    with nested(patch.object(EmptyCommandLine, '_main'),
-                patch.object(EmptyCommandLine, '_sub')) as (_main, _sub):
+    with patch.object(EmptyCommandLine, '_main') as _main, \
+            patch.object(EmptyCommandLine, '_sub') as _sub:
         e = EmptyCommandLine(raise_exceptions=True)
         e.run(e.parse(['sub']))
         assert not _main.called
@@ -293,11 +291,10 @@ class NestedCommandLine(Application):
 
 @trap_exit_fail
 def test_nested_command_subcommands():
-    with nested(patch.object(NestedCommandLine, '_main'),
-                patch.object(NestedCommandLine, '_sub'),
-                patch.object(NestedCommandLine, '_foobar_bla'),
-                patch.object(NestedCommandLine, '_foobar_blip_blop')) \
-                as (_main, _sub, _foobar_bla, _foobar_blip_blop):
+    with patch.object(NestedCommandLine, '_main') as _main, \
+            patch.object(NestedCommandLine, '_sub') as _sub,\
+            patch.object(NestedCommandLine, '_foobar_bla') as _foobar_bla, \
+            patch.object(NestedCommandLine, '_foobar_blip_blop') as _blop:
 
         c = NestedCommandLine(raise_exceptions=True)
 
@@ -318,4 +315,4 @@ def test_nested_command_subcommands():
         assert not _main.called
         assert _sub.call_count == 1
         assert _foobar_bla.call_count == 1
-        assert _foobar_blip_blop.call_count == 1
+        assert _blop.call_count == 1

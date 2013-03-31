@@ -7,7 +7,10 @@ import sys
 from logging import NullHandler
 from subprocess import check_call, check_output, Popen
 
-class CommandoLoaderException(Exception): pass
+
+class CommandoLoaderException(Exception):
+    pass
+
 
 def load_python_object(name):
     """
@@ -22,7 +25,8 @@ def load_python_object(name):
         module = __import__(module_name)
     except ImportError:
         raise CommandoLoaderException(
-                "Module [%s] cannot be loaded." % module_name)
+            "Module [%s] cannot be loaded." % module_name
+        )
 
     if object_name == '':
         return module
@@ -31,23 +35,26 @@ def load_python_object(name):
         module = sys.modules[module_name]
     except KeyError:
         raise CommandoLoaderException(
-                "Error occured when loading module [%s]" % module_name)
+            "Error occured when loading module [%s]" % module_name
+        )
 
     try:
-        logger.debug('Getting object [%s] from module [%s]' %
-                    (object_name, module_name))
+        logger.debug(
+            'Getting object [%s] from module [%s]' %
+            (object_name, module_name)
+        )
         return getattr(module, object_name)
     except AttributeError:
         raise CommandoLoaderException(
-                "Cannot load object [%s]. "
-                "Module [%s] does not contain object [%s]. "
-                "Please fix the configuration or "
-                "ensure that the module is installed properly" %
-                    (
-                        name,
-                        module_name,
-                        object_name
-                    )
+            "Cannot load object [%s]. "
+            "Module [%s] does not contain object [%s]. "
+            "Please fix the configuration or "
+            "ensure that the module is installed properly" %
+            (
+                name,
+                module_name,
+                object_name
+            )
         )
 
 
@@ -95,12 +102,15 @@ def getLoggerWithConsoleHandler(logger_name=None):
         handler = logging.StreamHandler(sys.stdout)
         if sys.platform == 'win32':
             formatter = logging.Formatter(
-                            fmt="%(asctime)s %(name)s %(message)s",
-                            datefmt='%H:%M:%S')
+                fmt="%(asctime)s %(name)s %(message)s",
+                datefmt='%H:%M:%S'
+            )
         else:
-            formatter = ColorFormatter(fmt="$RESET %(asctime)s "
-                                      "$BOLD$COLOR%(name)s$RESET "
-                                      "%(message)s", datefmt='%H:%M:%S')
+            formatter = ColorFormatter(
+                fmt="$RESET %(asctime)s "
+                "$BOLD$COLOR%(name)s$RESET "
+                "%(message)s", datefmt='%H:%M:%S'
+            )
         handler.setFormatter(formatter)
         logger.addHandler(handler)
     return logger
@@ -120,7 +130,7 @@ def getLoggerWithNullHandler(logger_name):
 ## Code stolen from :
 ## http://stackoverflow.com/q/384076
 ##
-BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)
+BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = list(range(8))
 
 COLORS = {
     'WARNING': YELLOW,
@@ -152,11 +162,11 @@ class ColorFormatter(logging.Formatter):
         levelname = record.levelname
         color = COLOR_SEQ % (30 + COLORS[levelname])
         message = logging.Formatter.format(self, record)
-        message = message.replace("$RESET", RESET_SEQ)\
-                           .replace("$BOLD",  BOLD_SEQ)\
-                           .replace("$COLOR", color)
+        message = message.replace("$RESET", RESET_SEQ)
+        message = message.replace("$BOLD",  BOLD_SEQ)
+        message = message.replace("$COLOR", color)
 
-        for k, v in COLORS.items():
+        for k, v in list(COLORS.items()):
             message = message.replace("$" + k,    COLOR_SEQ % (v + 30))\
                              .replace("$BG" + k,  COLOR_SEQ % (v + 40))\
                              .replace("$BG-" + k, COLOR_SEQ % (v + 40))
@@ -166,10 +176,10 @@ logging.ColorFormatter = ColorFormatter
 
 
 __all__ = [
-            'CommandoLoaderException',
-            'load_python_object',
-            'ShellCommand',
-            'ColorFormatter',
-            'getLoggerWithNullHandler',
-            'getLoggerWithConsoleHandler'
-        ]
+    'CommandoLoaderException',
+    'load_python_object',
+    'ShellCommand',
+    'ColorFormatter',
+    'getLoggerWithNullHandler',
+    'getLoggerWithConsoleHandler'
+]
