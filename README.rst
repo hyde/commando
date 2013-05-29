@@ -2,7 +2,7 @@
 commando - argparse in style
 ============================
 
-**Version 0.3.2a**
+**Version 0.3.3a**
 
 A simple wrapper for ``argparse`` that allows commands and arguments
 to be defined declaratively using decorators. Note that this does
