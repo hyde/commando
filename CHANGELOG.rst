@@ -1,3 +1,7 @@
+Version 0.3.4
+--------------
+- Use proper error code on exit.
+
 Version 0.3.3a
 --------------
 

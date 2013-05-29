@@ -259,10 +259,10 @@ class Application(object):
         """
         Delegates to `ArgumentParser.error`
         """
-        self.logger.error(message)
         if self.__parser__: # pylint: disable-msg=E1101
             self.__parser__.error(message) # pylint: disable-msg=E1101
         else:
+            self.logger.error(message)
             sys.exit(2)
 
     def print_usage(self, out_file=None):
@@ -308,6 +308,7 @@ class Application(object):
         except Exception, e: # pylint: disable-msg=W0703
             import traceback
             self.logger.debug(traceback.format_exc())
+            self.logger.error(e.message)
             if self.raise_exceptions:
                 raise
-            self.exit(e.message)
+            sys.exit(2)
