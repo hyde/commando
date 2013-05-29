@@ -1,3 +1,15 @@
+Version 0.3.3a
+--------------
+
+- Fix exception handling.
+    - Never use `__parser__.error`
+    - Always log errors and traceback
+- Add wrapper methods for `__parser__`.
+    - `exit`, `error`
+    - `print_usage, `print_help`
+    - `format_usage, `format_help`
+- Improve docstrings.
+
 Version 0.3.2a
 --------------
 

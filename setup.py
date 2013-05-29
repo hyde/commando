@@ -13,7 +13,7 @@ setup(
     description='A declarative interface to argparse with additional utilities',
     long_description=long_description,
 
-    version='0.3.2a',
+    version='0.3.3a',
 
     author='Lakshmi Vyas',
     author_email='lakshmi.vyas@gmail.com',

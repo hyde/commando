@@ -1,13 +1,20 @@
 """
 Logging and other aspects.
 """
+
+# pylint: disable-msg=C0103
+
 import logging
 import sys
 
 from logging import NullHandler
 from subprocess import check_call, check_output, Popen
 
-class CommandoLoaderException(Exception): pass
+class CommandoLoaderException(Exception):
+    """
+    Exception raised when `load_python_object` fails.
+    """
+    pass
 
 def load_python_object(name):
     """
@@ -76,19 +83,31 @@ class ShellCommand(object):
         return (args, kwargs)
 
     def call(self, *args, **kwargs):
+        """
+        Delegates to `subprocess.check_call`.
+        """
         args, kwargs = self.__process__(*args, **kwargs)
         return check_call(args, **kwargs)
 
     def get(self, *args, **kwargs):
+        """
+        Delegates to `subprocess.check_output`.
+        """
         args, kwargs = self.__process__(*args, **kwargs)
         return check_output(args, **kwargs)
 
     def open(self, *args, **kwargs):
+        """
+        Delegates to `subprocess.Popen`.
+        """
         args, kwargs = self.__process__(*args, **kwargs)
         return Popen(args, **kwargs)
 
 
 def getLoggerWithConsoleHandler(logger_name=None):
+    """
+    Gets a logger object with a pre-initialized console handler.
+    """
     logger = logging.getLogger(logger_name)
     logger.setLevel(logging.INFO)
     if not logger.handlers:
@@ -137,12 +156,15 @@ COLORS = {
     'WHITE': WHITE,
 }
 
-RESET_SEQ = "\033[0m"
-COLOR_SEQ = "\033[1;%dm"
-BOLD_SEQ = "\033[1m"
+RESET_SEQ = "\033[0m"       # pylint: disable-msg=W1401
+COLOR_SEQ = "\033[1;%dm"    # pylint: disable-msg=W1401
+BOLD_SEQ = "\033[1m"        # pylint: disable-msg=W1401
 
 
 class ColorFormatter(logging.Formatter):
+    """
+    Basic formatter to show colorful log lines.
+    """
 
     def __init__(self, *args, **kwargs):
         # can't do super(...) here because Formatter is an old school class
@@ -156,10 +178,10 @@ class ColorFormatter(logging.Formatter):
                            .replace("$BOLD",  BOLD_SEQ)\
                            .replace("$COLOR", color)
 
-        for k, v in COLORS.items():
-            message = message.replace("$" + k,    COLOR_SEQ % (v + 30))\
-                             .replace("$BG" + k,  COLOR_SEQ % (v + 40))\
-                             .replace("$BG-" + k, COLOR_SEQ % (v + 40))
+        for key, value in COLORS.items():
+            message = message.replace("$" + key, COLOR_SEQ % (value + 30))\
+                             .replace("$BG" + key, COLOR_SEQ % (value + 40))\
+                             .replace("$BG-" + key, COLOR_SEQ % (value + 40))
         return message + RESET_SEQ
 
 logging.ColorFormatter = ColorFormatter
