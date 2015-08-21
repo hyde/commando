@@ -2,6 +2,7 @@ Version 0.3.5a
 --------------
 
 - Install with setuptools instead of distribute
+- Python 3 compatibility
 
 Version 0.3.4
 --------------
