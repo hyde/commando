@@ -1,3 +1,8 @@
+Version 0.3.5a
+--------------
+
+- Install with setuptools instead of distribute
+
 Version 0.3.4
 --------------
 - Use proper error code on exit.
