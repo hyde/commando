@@ -308,7 +308,7 @@ class Application(with_metaclass(Commando, object)):
         except Exception as e: # pylint: disable-msg=W0703
             import traceback
             self.logger.debug(traceback.format_exc())
-            self.logger.error(e.message)
+            self.logger.error(str(e))
             if self.raise_exceptions:
                 raise
             sys.exit(2)

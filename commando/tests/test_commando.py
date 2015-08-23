@@ -180,7 +180,7 @@ def test_command_subcommands_usage():
     with patch.object(ComplexCommandLine, '_main'):
         with patch.object(ComplexCommandLine, '_sub'):
             c = ComplexCommandLine()
-            c.parse(['--usage'])
+            c.parse(['--help'])
 
 
 @trap_exit_fail
@@ -198,7 +198,7 @@ class EmptyCommandLine(Application):
 
     @command(description='test', prog='Empty')
     def main(self, params):
-        assert params == []
+        assert not params.__dict__
         self._main()
 
     @subcommand('sub', description='test sub')
