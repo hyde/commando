@@ -1,8 +1,16 @@
+Version 1.0.0
+-------------
+
+- Fix code formatting issues.
+- Add travis.yml.
+
 Version 0.3.5a
 --------------
 
-- Install with setuptools instead of distribute
-- Python 3 compatibility
+Thanks to `Jon Banafato`_:
+
+- Install with setuptools instead of distribute.
+- Python 3 compatibility.
 
 Version 0.3.4
 --------------
@@ -28,7 +36,7 @@ Version 0.3.2a
 Version 0.3.1a
 --------------
 
-Thanks to `fruch_ :
+Thanks to `fruch`_ :
 
 - Preserve the order of parameters in declaration.
 
@@ -86,3 +94,4 @@ Version 0.1a
 .. _Ben West: https://github.com/bewest
 .. _Julien Danjou: https://github.com/jd
 .. _fruch:  https://github.com/fruch
+.. _Jon Banafato: https://github.com/jonafato

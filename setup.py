@@ -8,14 +8,14 @@ except IOError:
 
 setup(
     name='commando',
-    description='A declarative interface to argparse with additional utilities',
+    description='A declarative interface to argparse and extras.',
     long_description=long_description,
 
-    version='0.3.5a',
+    version='1.0.0',
 
     author='Lakshmi Vyas',
     author_email='lakshmi.vyas@gmail.com',
-    url='http://github.com/lakshmivyas/commando',
+    url='http://github.com/hyde/commando',
 
     packages=['commando'],
     requires=['python (>= 2.7)'],
