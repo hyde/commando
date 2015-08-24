@@ -5,6 +5,8 @@ configuration objects.
 
 from collections import defaultdict
 
+from ._compat import with_metaclass, iteritems
+
 SEQS = (tuple, list, set, frozenset)
 
 class ConfigDict(defaultdict):
@@ -16,7 +18,7 @@ class ConfigDict(defaultdict):
     def __init__(self, initial=None):
         super(ConfigDict, self).__init__(ConfigDict)
         initial = initial or {}
-        for key, value in initial.iteritems():
+        for key, value in iteritems(initial):
             self.__setitem__(key, value)
 
     def __setitem__(self, key, value):
@@ -71,7 +73,7 @@ class ConfigDict(defaultdict):
 
         """
         overrides = overrides or {}
-        for key, value in overrides.iteritems():
+        for key, value in iteritems(overrides):
             current = self.get(key)
             if isinstance(value, dict) and isinstance(current, dict):
                 current.patch(value)
@@ -113,15 +115,15 @@ class AutoPropMetaClass(type):
     """
     def __new__(mcs, cname, cbases, cattrs):
         autoprops = {name: member
-                        for name, member in cattrs.iteritems()
+                        for name, member in iteritems(cattrs)
                         if getattr(member, 'autoprop', False)}
-        for name, member in autoprops.iteritems():
+        for name, member in iteritems(autoprops):
             cattrs[name] = AutoPropDescriptor(member)
         return super(AutoPropMetaClass, mcs).__new__(
                 mcs, cname, cbases, cattrs)
 
 # pylint: disable-msg=R0903
-class AutoProp(object):
+class AutoProp(with_metaclass(AutoPropMetaClass, object)):
     """
     The base class for all objects supporting autoprops.
 
@@ -144,7 +146,6 @@ class AutoProp(object):
     >>> 'xyz'
 
     """
-    __metaclass__ = AutoPropMetaClass
 
     @staticmethod
     def default(function):

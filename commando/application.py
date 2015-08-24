@@ -5,6 +5,7 @@ Declarative interface for argparse
 from argparse import ArgumentParser
 from collections import namedtuple
 from commando.util import getLoggerWithConsoleHandler
+from ._compat import itervalues, with_metaclass
 
 import logging
 import sys
@@ -46,7 +47,7 @@ class Commando(type):
         main_parser = None
         # pylint: disable-msg=C0111
         # Collect commands based on decorators
-        for member in attrs.itervalues():
+        for member in itervalues(attrs):
             if hasattr(member, "command"):
                 main_command = member
             elif hasattr(member, "subcommand"):
@@ -227,11 +228,10 @@ class append_const(param):
                                                 **kwargs)
 
 
-class Application(object):
+class Application(with_metaclass(Commando, object)):
     """
     Barebones base class for command line applications.
     """
-    __metaclass__ = Commando
 
     def __init__(self, raise_exceptions=False, logger=None):
         self.raise_exceptions = raise_exceptions
@@ -305,10 +305,10 @@ class Application(object):
                 args.run(self, args)
             else:
                 self.__main__(args) # pylint: disable-msg=E1101
-        except Exception, e: # pylint: disable-msg=W0703
+        except Exception as e: # pylint: disable-msg=W0703
             import traceback
             self.logger.debug(traceback.format_exc())
-            self.logger.error(e.message)
+            self.logger.error(str(e))
             if self.raise_exceptions:
                 raise
             sys.exit(2)

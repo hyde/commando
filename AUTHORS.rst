@@ -31,6 +31,7 @@ Authors
 *   `Jon Banafato`_
 
     -   Upgrade from distribute to setuptools
+    -   Python 3 compatibility
 
 .. _Lakshmi Vyas: https://github.com/lakshmivyas
 .. _Brandon Philips: https://github.com/philips
