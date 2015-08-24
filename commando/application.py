@@ -16,7 +16,7 @@ try:
     import pkg_resources
     # pylint: disable-msg=E1103
     __version__ = pkg_resources.get_distribution('commando').version
-except Exception: # pylint: disable-msg=W0703
+except Exception:  # pylint: disable-msg=W0703
     __version__ = 'unknown'
 
 __all__ = [
@@ -72,7 +72,8 @@ class Commando(type):
                     add_subparser(func.parent)
                 if not getattr(func.parent, 'subparsers', None):
                     # Subparser collection doesn't exist for the parent.
-                    func.parent.subparsers = func.parent.parser.add_subparsers()
+                    func.parent.subparsers = func.parent.parser\
+                                                        .add_subparsers()
 
             func.parser = func.parent.subparsers.add_parser(
                                                     *func.subcommand.args,
@@ -81,7 +82,7 @@ class Commando(type):
 
         if main_command:
             main_parser = ArgumentParser(*main_command.command.args,
-                                        **main_command.command.kwargs)
+                                         **main_command.command.kwargs)
 
             main_command.parser = main_parser
             add_arguments(main_command)
@@ -224,8 +225,8 @@ class append_const(param):
 
     def __init__(self, *args, **kwargs):
         super(append_const, self).__init__(*args,
-                                                action='append_const',
-                                                **kwargs)
+                                           action='append_const',
+                                           **kwargs)
 
 
 class Application(with_metaclass(Commando, object)):
@@ -241,7 +242,7 @@ class Application(with_metaclass(Commando, object)):
         """
         Delegates to `ArgumentParser.parse_args`
         """
-        return self.__parser__.parse_args(argv) # pylint: disable-msg=E1101
+        return self.__parser__.parse_args(argv)  # pylint: disable-msg=E1101
 
     def exit(self, status=0, message=None):
         """
@@ -249,18 +250,17 @@ class Application(with_metaclass(Commando, object)):
         """
         if status:
             self.logger.error(message)
-        if self.__parser__: # pylint: disable-msg=E1101
-            self.__parser__.exit(status, message) # pylint: disable-msg=E1101
+        if self.__parser__:  # pylint: disable-msg=E1101
+            self.__parser__.exit(status, message)  # pylint: disable-msg=E1101
         else:
             sys.exit(status)
-
 
     def error(self, message=None):
         """
         Delegates to `ArgumentParser.error`
         """
-        if self.__parser__: # pylint: disable-msg=E1101
-            self.__parser__.error(message) # pylint: disable-msg=E1101
+        if self.__parser__:  # pylint: disable-msg=E1101
+            self.__parser__.error(message)  # pylint: disable-msg=E1101
         else:
             self.logger.error(message)
             sys.exit(2)
@@ -269,25 +269,29 @@ class Application(with_metaclass(Commando, object)):
         """
         Delegates to `ArgumentParser.print_usage`
         """
-        return self.__parser__.print_usage(out_file) # pylint: disable-msg=E1101
+        # pylint: disable-msg=E1101
+        return self.__parser__.print_usage(out_file)
+        # pylint: enable-msg=E1101
 
     def print_help(self, out_file=None):
         """
         Delegates to `ArgumentParser.print_help`
         """
-        return self.__parser__.print_help(out_file) # pylint: disable-msg=E1101
+        # pylint: disable-msg=E1101
+        return self.__parser__.print_help(out_file)
+        # pylint: enable-msg=E1101
 
     def format_usage(self):
         """
         Delegates to `ArgumentParser.format_usage`
         """
-        return self.__parser__.format_usage() # pylint: disable-msg=E1101
+        return self.__parser__.format_usage()  # pylint: disable-msg=E1101
 
     def format_help(self):
         """
         Delegates to `ArgumentParser.format_help`
         """
-        return self.__parser__.format_help() # pylint: disable-msg=E1101
+        return self.__parser__.format_help()  # pylint: disable-msg=E1101
 
     def run(self, args=None):
         """
@@ -304,8 +308,8 @@ class Application(with_metaclass(Commando, object)):
             if hasattr(args, 'run'):
                 args.run(self, args)
             else:
-                self.__main__(args) # pylint: disable-msg=E1101
-        except Exception as e: # pylint: disable-msg=W0703
+                self.__main__(args)  # pylint: disable-msg=E1101
+        except Exception as e:  # pylint: disable-msg=W0703
             import traceback
             self.logger.debug(traceback.format_exc())
             self.logger.error(str(e))

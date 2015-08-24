@@ -9,6 +9,7 @@ from ._compat import with_metaclass, iteritems
 
 SEQS = (tuple, list, set, frozenset)
 
+
 class ConfigDict(defaultdict):
     """
     A patchable dictionary like object that allows accessing items
@@ -108,6 +109,7 @@ class AutoPropDescriptor(object):
     def __set__(self, instance, value):
         self.__set_assigned__(instance, value)
 
+
 # pylint: disable-msg=R0903
 class AutoPropMetaClass(type):
     """
@@ -115,12 +117,13 @@ class AutoPropMetaClass(type):
     """
     def __new__(mcs, cname, cbases, cattrs):
         autoprops = {name: member
-                        for name, member in iteritems(cattrs)
-                        if getattr(member, 'autoprop', False)}
+                     for name, member in iteritems(cattrs)
+                     if getattr(member, 'autoprop', False)}
         for name, member in iteritems(autoprops):
             cattrs[name] = AutoPropDescriptor(member)
         return super(AutoPropMetaClass, mcs).__new__(
                 mcs, cname, cbases, cattrs)
+
 
 # pylint: disable-msg=R0903
 class AutoProp(with_metaclass(AutoPropMetaClass, object)):

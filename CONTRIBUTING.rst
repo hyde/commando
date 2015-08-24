@@ -5,8 +5,8 @@
 How do the pull requests get merged?
 ------------------------------------
 
-The following points are considered as part of merging pull requests after 
-it is deemed necessary.
+The following points are considered as part of merging pull requests
+after it is deemed necessary.
 
 1.  Is there an issue tagged in the commit?
 2.  Do the existing tests pass?
@@ -19,24 +19,24 @@ it is deemed necessary.
 Guidelines
 -----------
 
-If the following guidelines are observed as much as possible, it will 
+If the following guidelines are observed as much as possible, it will
 immensely help in verifying and merging the pull requests.
 
 1.  One pull request = One feature or One bug.
-2.  Always tag an issue in the commit. If an issue does 
-    not exist for a feature or a bug, please add one.
+2.  Always tag an issue in the commit. If an issue does not exist for
+    a feature or a bug, please add one.
 3.  Use topic / feature branches.
-4.  Make sure a test exists to verify the committed code. A 
-    good way to think about it is: if these commits were reversed 
-    and only the test were added back in, it ought to fail.
+4.  Make sure a test exists to verify the committed code. A good way
+    to think about it is: if these commits were reversed and only the
+    test were added back in, it ought to fail.
 5.  Make the `commit message`_ as verbose as possible.
 6.  Add yourself to `Authors`_ list and update your contribution.
 7.  Cross update `Changelog`_ list as well.
-8.  Update ``version.py`` and ``README.rst`` with a version in this format:
-    <version>-<yourusername><issuenumber>. 
-9.  If the change was complicated and resulted in a lot of commits, 
-    consider ``rebase -i`` to sqash and/or rearrange them to make it easier 
-    to review.
+8.  Update ``version.py`` and ``README.rst`` with a version in this
+    format: <version>-<yourusername><issuenumber>.
+9.  If the change was complicated and resulted in a lot of commits,
+    consider ``rebase -i`` to sqash and/or rearrange them to make it
+    easier to review.
 10. Update the `Readme`_.
 
 

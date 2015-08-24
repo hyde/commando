@@ -10,11 +10,13 @@ import sys
 from logging import NullHandler
 from subprocess import check_call, check_output, Popen
 
+
 class CommandoLoaderException(Exception):
     """
     Exception raised when `load_python_object` fails.
     """
     pass
+
 
 def load_python_object(name):
     """
@@ -42,20 +44,17 @@ def load_python_object(name):
 
     try:
         logger.debug('Getting object [%s] from module [%s]' %
-                    (object_name, module_name))
+                     (object_name, module_name))
         return getattr(module, object_name)
     except AttributeError:
         raise CommandoLoaderException(
                 "Cannot load object [%s]. "
                 "Module [%s] does not contain object [%s]. "
                 "Please fix the configuration or "
-                "ensure that the module is installed properly" %
-                    (
-                        name,
-                        module_name,
-                        object_name
-                    )
-        )
+                "ensure that the module is installed properly" % (
+                    name,
+                    module_name,
+                    object_name))
 
 
 class ShellCommand(object):
@@ -118,8 +117,8 @@ def getLoggerWithConsoleHandler(logger_name=None):
                             datefmt='%H:%M:%S')
         else:
             formatter = ColorFormatter(fmt="$RESET %(asctime)s "
-                                      "$BOLD$COLOR%(name)s$RESET "
-                                      "%(message)s", datefmt='%H:%M:%S')
+                                       "$BOLD$COLOR%(name)s$RESET "
+                                       "%(message)s", datefmt='%H:%M:%S')
         handler.setFormatter(formatter)
         logger.addHandler(handler)
     return logger
@@ -136,9 +135,9 @@ def getLoggerWithNullHandler(logger_name):
     return logger
 
 
-## Code stolen from :
-## http://stackoverflow.com/q/384076
-##
+# Code stolen from :
+# http://stackoverflow.com/q/384076
+#
 BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)
 
 COLORS = {
@@ -175,8 +174,8 @@ class ColorFormatter(logging.Formatter):
         color = COLOR_SEQ % (30 + COLORS[levelname])
         message = logging.Formatter.format(self, record)
         message = message.replace("$RESET", RESET_SEQ)\
-                           .replace("$BOLD",  BOLD_SEQ)\
-                           .replace("$COLOR", color)
+                         .replace("$BOLD",  BOLD_SEQ)\
+                         .replace("$COLOR", color)
 
         for key, value in COLORS.items():
             message = message.replace("$" + key, COLOR_SEQ % (value + 30))\

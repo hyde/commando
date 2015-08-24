@@ -18,7 +18,7 @@ if PY2:
     _itervalues = 'itervalues'
 
     # other iterators
-    get_next = lambda x: x.next
+    def get_next(x): return x.next
     range = xrange  # NOQA, Python 2 only
 
     # types
@@ -34,7 +34,7 @@ else:
     _itervalues = 'values'
 
     # other iterators
-    get_next = lambda x: x.__next__
+    def get_next(x): return x.__next__
     range = range
 
     # types
